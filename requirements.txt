@@ -1,0 +1,8 @@
+bcrypt==4.3.0
+click==8.2.1
+markdown-it-py==3.0.0
+mdurl==0.1.2
+Pygments==2.19.1
+rich==14.0.0
+rich-pyfiglet==0.1.4
+tabulate==0.9.0

@@ -1,0 +1,47 @@
+# emoji_characters.py
+
+# Emoji constant variables created for use in menu options, mood rating, status, errors and others to enhance CLI visuals
+
+# MENU EMOJIS
+EMOJI_LOGIN = "🔑"
+EMOJI_CREATE_USER = "➕👤"
+EMOJI_EXIT = "❌"
+EMOJI_CREATE_ENTRY = "📝"
+EMOJI_VIEW_ENTRIES = "📅"
+EMOJI_MOOD_SUMMARY = "📊"
+EMOJI_LOGOUT = "🔒"
+
+# STATUS/ERROR EMOJIS
+EMOJI_SUCCESSFUL = "✅"
+EMOJI_WARNING = "⚠️"
+EMOJI_INVALID = "⛔"
+
+# MOOD RATING EMOJIS
+EMOJI_MOOD_AWFUL = "😭"
+EMOJI_MOOD_SAD ="😔"
+EMOJI_MOOD_OKAY = "😐"
+EMOJI_MOOD_GOOD = "🙂"
+EMOJI_MOOD_GREAT = "😄"
+
+# OTHER EMOJIS
+EMOJI_JOURNAL = "📖"
+EMOJI_ROCKET = "🚀"
+EMOJI_GOALS = "🎯"
+EMOJI_HEART = "❤"
+EMOJI_DATE_TIME = "🕘"
+EMOJI_PREVIOUS ="◀"
+EMOJI_NEXT = "▶"
+EMOJI_HELP = "❓"
+EMOJI_WAVE ="👋"
+
+# JOURNAL EMOJIS
+EMOJI_USER = "👤"
+EMOJI_WRITE = "✍️"
+EMOJI_REFLECTION = "💭"
+EMOJI_WINS = "🏆"
+EMOJI_CHALLENGES = "💥"
+EMOJI_GOALS = "🎯"
+EMOJI_GRATITUDE = "🙏"
+EMOJI_ENCOURAGEMENT = "🌟"
+EMOJI_SAVE = "💾"
+
