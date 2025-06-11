@@ -1,127 +1,82 @@
-import json
+# journal.py
+
 from pathlib import Path
-from datetime import datetime
-import random
-import quotes
-import data
-import mood
-from utilities.emojis import EMOJI_CREATE_ENTRY, EMOJI_VIEW_ENTRIES, EMOJI_MOOD_SUMMARY, EMOJI_LOGOUT, EMOJI_MOOD_AWFUL, EMOJI_MOOD_SAD, EMOJI_MOOD_OKAY, EMOJI_MOOD_GOOD, EMOJI_MOOD_GREAT, EMOJI_WRITE
 
+from utilities.quotes import encouragement_quotes
+from utilities.journal_models import JournalManager, JournalEntry, get_user_mood_selection, MOOD_RATINGS, JOURNAL_ENTRIES_JSON_FILE
+from utilities.ascii_art import display_journal_banner
+from utilities.emojis import *
+from utilities.helpers import display_menu, get_menu_choice, get_valid_input
+from utilities.user_auth_models import UserManager
 
-# Journal menu options - create journal entry, view past journal entry, view mood summary, logout
-JOURNAL_MENU_OPTIONS = {
+# JOURNAL MENU OPTIONS (Dict based menu)
+JOURNAL_MENU = {
     "1": f"{EMOJI_CREATE_ENTRY} Create a Journal Entry",
     "2": f"{EMOJI_VIEW_ENTRIES} View Past Journal Entries",
-    "3": f"{EMOJI_MOOD_SUMMARY} View Mood Trend Summary",
-    "4": f"{EMOJI_LOGOUT} Logout"
+    "3": f"{EMOJI_LOGOUT} Logout"
 }
 
-MOOD_RATING_OPTIONS = {
-    "1": f"{EMOJI_MOOD_AWFUL} Awful",
-    "2": f"{EMOJI_MOOD_SAD} Sad",
-    "3": f"{EMOJI_MOOD_OKAY} Okay",
-    "4": f"{EMOJI_MOOD_GOOD} Good",
-    "5": f"{EMOJI_MOOD_GREAT} Great"
-}
+# CONSTANT FILE PATH TO USER ACCOUNTS DATA (used to access and tie journal entries to user)
+USER_ACCOUNTS_JSON_FILE = Path('data/user_accounts.json')
 
-MOO_DESCRIPTIONS = {
-    "1": "Overwhelmed or had a rough day",
-    "2": "Feeling down or low",
-    "3": "Neutral",
-    "4": "Feeling pretty good or pleasant",
-    "5": "Feeling happy, fulfilled or amazing"
-}
-
-
-
-# MAIN MENU INTERFACE AND NAVIGATION (after login):
-# 1. Add new journal entry
-# 2. View past journal entry -> Allow editing/deleting??
-# 3. View mood trend summary (NICE TO HAVE FEATURE)
-def journal_menu(menu_options):
-    print(f"Ready to Journal? {EMOJI_WRITE}")
-    display_main_menu(menu_options)
-    user_choice = input("Enter a menu choice: ")
-    while user_choice not in menu_options.keys():
-        print("Invalid option. Please try again.")
-        user_choice = input("Enter a valid menu choice: ")
-    if user_choice == "1":
-        create_journal()
-    elif user_choice == "2":
-        view_journal()
-    elif user_choice == "3":
-        view_mood_summary()
-    elif user_choice == "4":
-        logout()
-
-# Journal file (JSON)
-# eg. SETTINGS_JSON_FILE = "settings.json"
-JOURNAL_ENTRIES_JSON_FILE = Path('data/journals_entries.json')
-
-# JOURNAL ENTRY FUNCTIONS in journal.py
-
-# NEW JOURNAL ENTRY FUNCTIONS:
-# Add classes for 'Moodtracker' and 'JournalEntry'
-class JournalEntry:
-    def __init__(self, date, mood, wins, challenges, goals, gratitude):
-        self.datetime = datetime.now()
-        self.mood = mood    
-        self.wins = wins
-        self.challenges = challenges
-        self.gratitude = gratitude
-        self.goals = goals
-
-    def display(self):
-        print(f"Journal Entry created on: {self.timestamp}")
-        print(f"Mood Rating: {self.mood}")
-        print(f"Wins of the day: {self.wins}")
-        print(f"Challenges of the day: {self.challenges}")
-        print(f"Gratitude of the day: {self.gratitude}")
-        print(f"Goal for tomorrow: {self.goals}")
-
-    # def save_to_file():
+# CREATE NEW JOURNAL ENTRY FLOW:
+def create_journal_entry(journal_manager: JournalManager):
+    print(f"{EMOJI_CREATE_ENTRY} Starting new journal entry\n")
+    print(f"{EMOJI_HOURGLASS} Take a moment to reflect on your day... (Daily Mood, Wins, Challenges, Gratitude and Goal for tomorrow)\n")
+    try:
+        print("How are you feeling today? Choose your Mood Rating: [1, 2, 3, 4 or 5]\n")
+        mood_label = get_user_mood_selection(MOOD_RATINGS, encouragement_quotes)
+        print()
+        wins_input = get_valid_input("What went well today? ")
+        challenges_input = get_valid_input("What were the challenges you faced today? ")
+        gratitude_input = get_valid_input("What are you grateful for today? ")
+        goals_input = get_valid_input("What is your goal for tomorrow? ")
+        print()
+        new_entry = JournalEntry(mood_label, wins_input, challenges_input, gratitude_input, goals_input)
+        if journal_manager.save_journal_entry(new_entry):
+            print(f"{EMOJI_SUCCESSFUL} Your journal entry was saved successfully {EMOJI_SAVE}\n")
+        else:
+            print(f"{EMOJI_WARNING} Sorry! There was a problem saving your entry\n")
+    except Exception as err:
+        print(f"{EMOJI_WARNING} Sorry! There was an error during creating your journal entry: {err}")
 
 
-    # def save_to_file(self, ):
-
-    # def load_from_file():
-    
-    # def display_affirmation():
-
-    # def add_journal_entry():
-        
-# MOOD TRENDS SUMMARY in mood.py
-
-
-# Function for add new journal entry
-# Log timestamp
-# Input prompts
-# 1. Daily Mood - Save option
-# 2. Daily Wins - Save option
-# 3. Daily Challenges - Save option
-# 4. Daily Gratitude (optional) - Save option
-# 5. Completed entry returns randomly selected motivational affirmation
-# WRITE to JSON file
+# VIEW PAST JOURNAL ENTRIES FLOW:
+def view_journal_entries(journal_manager):
+    all_user_entries = journal_manager.get_user_entries()
+    if not all_user_entries:
+        print(f"{EMOJI_WARNING} Sorry! No journal entries found\n")
+        return
+    for entry in all_user_entries:
+        entry.display_entry()
+        print("=" * 60)
+        print()
 
 
-# VIEW JOURNAL ENTRY FUNCTIONS:
-# Function for view past journal entry
-# READ to JSON file
-# Show logged timestamp
-# Navigate by timestamp (days/time)
-# To work on - Allow Edit/Delete entries?
-# Write/Read JSON files
-# 1. Daily Mood
-# 2. Daily Wins
-# 3. Daily Challenges
-# 4. Daily Gratitude
-# 5. Motivational affirmation
-
-def run_journal():
-    print("Welcome to Mindful Moments - Your Personal Reflection Journaling App!")
+# MAIN FUNCTION TO START JOURNAL
+def run_journal(current_user):
+    display_journal_banner()
+    journal_manager = JournalManager(JOURNAL_ENTRIES_JSON_FILE, current_user)
+    print(f"Welcome back {current_user} to your Journal {EMOJI_WRITE}\n")
     while True:
-        display_main_menu(JOURNAL_MENU_OPTIONS)
-        print(f"Select an option from the Menu to get started! {EMOJI_WRITE}")
+        display_menu(JOURNAL_MENU)
+        menu_choice = get_menu_choice(JOURNAL_MENU)
+        if menu_choice == "1":
+            print("You have chosen to create a new Journal Entry\n")
+            create_journal_entry(journal_manager)
+        elif menu_choice == "2":
+            print("You have chosen to View Past Journal Entries\n")
+            view_journal_entries(journal_manager)
+        elif menu_choice == "3":
+            print(f"{EMOJI_WAVE} Thanks for using Mindful Moments. Goodbye and see you next time {current_user}!\n")
+            break
 
+
+# RUN THE JOURNAL
 if __name__ == '__main__':
-    run_journal()
+    user_manager = UserManager(USER_ACCOUNTS_JSON_FILE)
+    test_user = user_manager.get_user_account("nhihuynh")
+    if test_user:
+        run_journal(test_user)
+    else:
+        print("Test user not found")

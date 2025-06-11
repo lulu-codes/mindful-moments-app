@@ -21,3 +21,16 @@ def display_welcome_banner():
 
 
 # display_welcome_banner()
+
+
+
+custom_journal_banner = RichFiglet(
+    "Welcome to your Journal", # Rendered text welcome message
+    font="ansi_shadow",
+    colors=["light_sky_blue1", "medium_purple", "light_steel_blue", "plum2"],
+    animation="smooth_strobe",
+    fps=5,
+)
+
+def display_journal_banner():
+    console.print(custom_journal_banner)

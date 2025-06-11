@@ -44,7 +44,7 @@
 
 | Functionality Features | Function |
 | -------------------- | --------- |
-| Script to run program in main.py file | `if __name__ == "__main__":` |
+| Run program in main.py file | `if __name__ == "__main__":` |
 | App's welcome banner, use of `rich-pyfiglet` module to enhance visual UI | `display_welcome_banner()` |
 | Launches the start of main app | `run_app()` |
 
@@ -127,3 +127,36 @@
 | Calls function to safely close and exit app | `sys.exit()` |
 
 ---
+
+### JOURNAL ENTRY FLOW
+
+```
+(Once User successfully logs in)
+            └── Load Journal Menu
+                ├── Option [1] Create New Journal Entry
+                │       └── Prompt user for daily reflection on:
+                │             ├─ Mood rating
+                │             ├─ Random choice of 'encouragement quote' returned based on mood rating category
+                │             ├─ Wins of the day
+                │             ├─ Challenges of the day
+                │             ├─ Gratitude entry
+                │             └─ Random choice of motivational quote to close out journal entry
+                │       └── Create JournalEntry instance
+                │       └── Save to user's journal file (e.g., save_to_file())
+                │       └── Confirmation message of journal entry saved
+                │
+                ├── Option [2] View Past Entries
+                │       └── Load journal file (e.g., load_from_file())
+                │       └── Display list of entries
+                │             └── Options:
+                │                   ├─ View full entry
+                │                   └─ Return to menu
+                │
+                ├── Option [3] Mood Trend Summary
+                │       └── Load journal data
+                │       └── Parse moods + timestamps
+                │       └── Generate simple report or chart (console-based for now)
+                │
+                ├── Option [4] Exit App
+                        └── Save any changes if needed
+                        └── Return to Login or Exit Program

@@ -1,4 +1,8 @@
-mood_encouragements = {
+# quotes.py
+
+# CUSTOM ENCOURAGEMENT QUOTES USED TO RETURN BASED ON USER MOOD RATING SELECTION
+
+encouragement_quotes = {
 "1": [
     "It's okay to have rough days. You're doing your best.",
     "Even the strongest people have bad days. Tomorrow's a fresh start.",
