@@ -2,7 +2,7 @@ import json
 from pathlib import Path
 import bcrypt
 
-from utilities.emojis import *
+from ui.emojis import *
 
 # CLASS FOR USER ACCOUNT DATA REPRESENTATION (data class to create user account instances to format for storage)
 class UserAccount:

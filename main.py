@@ -4,17 +4,19 @@
 # IMPORT BUILT IN LIBRARIES:
 import sys
 from pathlib import Path
+import getpass
 
 # IMPORT THIRD-PARTY LIBRARIES:
 import rich
 
 # IMPORT CUSTOM MODULES:
-from utilities.user_auth_models import UserManager
-from utilities.journal_models import JournalEntry
-from utilities.helpers import display_menu, get_menu_choice, retry_prompt, get_valid_input
-from utilities.ascii_art import display_welcome_banner
-from utilities.emojis import *
+from models.user_auth_models import UserManager
+from models.journal_models import JournalEntry
+from models.helpers import display_menu, get_menu_choice, retry_prompt, get_valid_input
+from ui.ascii_art import display_welcome_banner
+from ui.emojis import *
 from journal import run_journal
+
 
 # Custom classes exceptions (off base Exception)
 class UserAuthError(Exception):
@@ -26,7 +28,7 @@ class AccountCreationCancelled(Exception):
     pass
 
 # CONSTANT FILE PATH TO USER ACCOUNTS DATA
-USER_ACCOUNTS_JSON_FILE = Path('data/user_accounts.json')
+USER_ACCOUNTS_JSON_FILE = Path('data_storage/user_accounts.json')
 
 # INSTANCE OF UserManager: Used to handle user login authentication and registration of new user accounts
 user_manager = UserManager(USER_ACCOUNTS_JSON_FILE)
@@ -50,9 +52,8 @@ def login():
             if not current_user:
                 print(f"{EMOJI_INVALID} Invalid username. Please try again\n")
                 if not retry_prompt():
-                    break
-                continue    
-            password_input = input("Enter your password: ").strip()
+                    raise UserAuthError(f"{EMOJI_WARNING} User failed to login with username and chose to not retry\n") 
+            password_input = getpass.getpass("Enter your password: ").strip()
             login_authenticated = user_manager.authenticate_user(current_user, password_input)
             if login_authenticated:
                 print(f"\n{EMOJI_AUTHENTICATED} Login Successful. Welcome back {current_user}!\n")
@@ -61,9 +62,10 @@ def login():
             else:
                 print(f"{EMOJI_INVALID} Login Unsuccessful\n")
                 if not retry_prompt():
-                    break
+                    raise UserAuthError(f"{EMOJI_WARNING} User failed to login successfully and chose to not retry\n")
     except Exception as err:
         print(f"{EMOJI_WARNING} Unexpected Error during Login: {err}\n")
+
 
 def prompt_username():
     """ Prompt for a valid username that is available, allows user to retry """
@@ -73,16 +75,17 @@ def prompt_username():
         if user_manager.user_exists(username):
             print(f"{EMOJI_WARNING} Sorry! That Username is already taken. Please choose a different username\n")
             if not retry_prompt():
-                return None     # User prompted to retry, opts to quit
+                return None
         else:
             print(f"{EMOJI_SUCCESSFUL} Yay! Username is available!\n")
             return username
         
+
 def prompt_password():
     """ Prompt for a valid password and password confirmation, for mismatch entries, allows user to retry """
     while True:
-        password = get_valid_input(prompt="Choose a password: ", field_name="Password", allow_blank=False, allow_spaces=False, min_length= 8, max_length=16)
-        confirm_password = input("Confirm your password: ").strip()
+        password = get_valid_input(prompt="Choose a password: ", field_name="Password", allow_blank=False, allow_spaces=False, min_length= 8, max_length=16, hide_input=True)
+        confirm_password = getpass.getpass("Confirm your password: ").strip()
         if password == confirm_password:
             print(f"{EMOJI_SUCCESSFUL} Passwords match and confirmed\n")
             return password
@@ -94,25 +97,25 @@ def prompt_password():
 def create_new_account():
     """ Handles creating new account flow to get validated username and password to register new account on completion or exits function early """
     print(f"Let's get you setup with a new account to get started!\n")
-    try:
-        username = prompt_username()
-        if not username:
-            print(f"{EMOJI_WARNING} Account creation cancelled during username request\n")
-            return None
-        password = prompt_password()
-        if not password:
-            print(f"{EMOJI_WARNING} Account creation cancelled during password request\n")
-            return None
-        registration_successful = user_manager.register_user(username, password)
-        if registration_successful:
-            print(f"{EMOJI_SAVE} Your account has now been created. {EMOJI_LOGIN} You can now Login from the main menu!\n")
-        else:
-            print(f"{EMOJI_WARNING} Sorry! There was a problem registering your account. Please try again\n")
-            if retry_prompt():
-                create_new_account()
-    except Exception as err:
-        print(f"{EMOJI_WARNING} There was an Error during creating your new account: {err}\n")
-
+    while True:
+        try:
+            username = prompt_username()
+            if not username:
+                raise AccountCreationCancelled(f"{EMOJI_WARNING} Account creation cancelled during username request\n")
+            password = prompt_password()
+            if not password:
+                raise AccountCreationCancelled(f"{EMOJI_WARNING} Account creation cancelled during password request\n")
+            registration_successful = user_manager.register_user(username, password)
+            if registration_successful:
+                print(f"{EMOJI_SAVE} Your account has now been created. {EMOJI_LOGIN} You can now Login from the main menu!\n")
+                break
+            else:
+                print(f"{EMOJI_WARNING} Sorry! There was a problem registering your account. Please try again\n")
+                if not retry_prompt():
+                    break
+        except AccountCreationCancelled as err:
+            print(f"{EMOJI_WARNING} There was an Error during creating your new account: {err}\n")
+            break
 
 # APP ENTRY POINT & MAIN FUNCTION TO START APP
 def main():
@@ -122,15 +125,18 @@ def main():
     while True:
         display_menu(WELCOME_MENU)
         menu_choice = get_menu_choice(WELCOME_MENU)
-        if menu_choice == "1":
-            print(f"You have chosen to Login\n")
-            login()
-        elif menu_choice == "2":
-            print(f"You have chosen to Create a New User Account\n")
-            create_new_account()
-        elif menu_choice == "3":
-            print(f"{EMOJI_WAVE} Exiting App...\n")
-            sys.exit(0)
+        try:
+            if menu_choice == "1":
+                print(f"You have chosen to Login\n")
+                login()
+            elif menu_choice == "2":
+                print(f"You have chosen to Create a New User Account\n")
+                create_new_account()
+            elif menu_choice == "3":
+                print(f"{EMOJI_WAVE} Exiting App...\n")
+                sys.exit(0)
+        except Exception as err:
+            print(f"{EMOJI_WARNING} Unexpected error: {err}")
 
 
 # RUN THE PROGRAM
