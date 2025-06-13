@@ -89,26 +89,30 @@ def login():
             console.print(f"[red]{EMOJI_WARNING} User not found. Please try again.[/red]")
             if not retry_prompt():
                 return None         # Returns back to main menu
-            continue                # Retry loop
+            continue                # Retry loop for username
         except ErrorGettingUserAccount as err:
             console.print(f"[red]{EMOJI_WARNING} Oops! There was a problem retrieving your account data.[/red]")
-            return None
+            if not retry_prompt():
+                return None
+            continue
         except Exception as err:
             console.print(f"[red]{EMOJI_WARNING} Unexpected error: {err}[/red]")
             return None
-        
-        password_input = getpass.getpass("Enter your password: ").strip()
-        try:
-            authenticated_user = user_manager.authenticate_user(user_account, password_input)
-            if authenticated_user:
-                console.print(f"[green]{EMOJI_SUCCESSFUL} Login Successful.[/green]\n")
-                console.print(f"\n{EMOJI_AUTHENTICATED} Welcome back {authenticated_user}!\n")
-                return authenticated_user    # Returns to parse through to run journal for current user
-        except AuthenticationError:
-                console.print(f"[red]{EMOJI_INVALID} Login Unsuccessful. Incorrect password.[/red]\n")
-                if not retry_prompt():
-                    return None
-                continue
+
+
+        while True:
+            password_input = getpass.getpass("Enter your password: ").strip()
+            try:
+                authenticated_user = user_manager.authenticate_user(user_account, password_input)
+                if authenticated_user:
+                    console.print(f"[green]{EMOJI_SUCCESSFUL} Login Successful.[/green]\n")
+                    console.print(f"\n{EMOJI_AUTHENTICATED} Welcome back {authenticated_user}!\n")
+                    return authenticated_user    # Returns to parse through to run journal for current user
+            except AuthenticationError:
+                    console.print(f"[red]{EMOJI_INVALID} Login Unsuccessful. Incorrect password.[/red]\n")
+                    if not retry_prompt():
+                        return None
+                    continue
     
 
 def create_new_account():
