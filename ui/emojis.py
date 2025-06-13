@@ -1,6 +1,6 @@
-# emoji_characters.py
+# emojis.py
 
-# Emoji constant variables created for use in menu options, mood rating, status, errors and others to enhance CLI visuals
+# Custom choice of Emoji constant variables created for use in menu options, mood rating, status, errors and others to enhance CLI visuals
 
 # MENU EMOJIS
 EMOJI_LOGIN = "🔑"
@@ -32,9 +32,6 @@ EMOJI_ROCKET = "🚀"
 EMOJI_GOALS = "🎯"
 EMOJI_HEART = "❤"
 EMOJI_DATE_TIME = "🕘"
-EMOJI_PREVIOUS ="◀"
-EMOJI_NEXT = "▶"
-EMOJI_HELP = "❓"
 EMOJI_WAVE ="👋"
 EMOJI_HOURGLASS = "⏳"
 

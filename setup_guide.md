@@ -4,6 +4,7 @@
 
 ### Table of Contents
 * [Requirements](#requirements)
+* [Installation Guide](#installation-guide)
 * [User Guide to use Mindful Moments App](#user-guide-to-use-mindful-moments-app)
 * [Application Flow & Functionality Features](#application-flow--functionality-features)
     * [Launch App](#launch-app-main-entry-point)
@@ -11,26 +12,60 @@
     * [Login](#login)
     * [Create New User Account](#create-new-user-account)
     * [Exit App](#exit-app)
+    * [Journal Entry Flow](#journal-entry-flow)
+* [Back to README file](README.md)
 
+---
 
 ## Requirements
-- Python version
-- Command Line terminal
-- 
+* **Python version** - 3.10 or later (Recommended version 3.13.3)
+* **Command Line terminal** - Linux Shell, Windows PowerShell or macOS Terminal
+* **pip** - Python package installer
+* **Internet** - To download and install dependencies
+
+---
+
+## Installation Guide
+
+1. Clone or download the repository to your local machine:
+    ```bash
+    git clone https://github.com/lulu-codes/mindful-moments-app.git
+    cd mindful-moments
+    ```
+2. Create and activate a virtual environment (recommended)
+    * On Windows:
+    ```powershell
+    python -m venv .venv
+    .\.venv\Scripts\activate
+    ```
+    * On Linux or macOS:
+    ```bash
+    python3 -m venv .venv
+    source .venv/bin/activate
+    ```
+3. Install the required Python packages and dependencies:
+    ```bash
+    pip install -r requirements.txt
+    ```
+4. Run the application:
+    ```bash
+    python main.py
+    ```
+    NOTE: Main entry app point is through `main.py` to be able to access `journal.py` as required to save and load user's account data and entries.
+
+---
 
 ## User Guide to use Mindful Moments App
+1. **Install Dependencies** - Ensure that the dependencies have been installed as per [Installation Guide](#installation-guide.
+2. **Launch the app** by running the main script:  
+    ```bash
+    python main.py
+    ```
+3. **Navigate the Welcome Menu** to either log in (existing users) or create a new user account (new users)
+4. **Navigate the Journal Menu (after successful login)** Log or view journal entries for mood and reflection entries
+5. **Logout & Exit App** After saving and finished with journal entries, log out and exit app.
 
-<ol>
-    <li> Step 1
-    <li> Step 2
-    <li> Step 3
-    <li> Step 4
-</ol>
-
-
-## Help & Support
-
-
+---
 
 ## Application Flow & Functionality Features
 
@@ -83,10 +118,10 @@
 
 | Functionality Features | Functions |
 | -------------------- | --------- |
-| Load stored user accounts | `UserManager.load_json_file(ACCOUNTS_JSON_FILE)` |
-| Check if user exists | `UserManager.user_exists(username)` |
+| Load stored user accounts | `UserManager.load_json_file(USER_ACCOUNTS_JSON_FILE)` |
+| Check if user exists | `UserManager.is_existing_user(username)` |
 | Verify password using bcrypt | `UserAccount.verify_password(password)` |
-| Handle login prompt logic | `login()` |
+| Login flow logic | `login()` |
 | Launch journal menu | `run_journal()` |
 
 ---
@@ -99,18 +134,18 @@
                         ├── If Username is taken → Asks again for new username
                         └── If Username available → Prompt to create password + confirm
                             ├── If Passwords do not match → Ask again, prompt to create password + confirm
-                            └── If Passwords match → Hash password & save to JSON file
+                            └── If Passwords match → Hash password and save user
                                         └── Confirm User Account created successfully + redirect to Login
 ```
 
 | Functionality Features | Functions |
 | -------------------- | --------- |
-| Check if username already exists | `UserManager.user_exists(username)` |
+| Check if username already exists | `UserManager.is_existing_user(username)` |
 | Validates password & confirmation | |
 | Hash the password | `UserManager.create_password_hash()` |
 | Create new UserAccount instance | `UserAccount(username, hashed_password)` |
 | Add new user to file | `UserManager.add_user(account: UserAccount)` |
-| Calls to Save updated data | `BaseDataManager.save_file()` |
+| Calls to Save updated data | `BaseDataManager.save_json_file()` |
 | Handle logic & user input | `create_new_account()` |
 | Calls to Login once UserAccount created successfuly | `login()` |
 
@@ -124,7 +159,7 @@
 
 | Functionalities Used | Functions |
 | -------------------- | --------- |
-| Calls function to safely close and exit app | `sys.exit()` |
+| Calls function to safely close and exit app | `sys.exit(0)` |
 
 ---
 
@@ -141,22 +176,18 @@
                 │             ├─ Challenges of the day
                 │             ├─ Gratitude entry
                 │             └─ Random choice of motivational quote to close out journal entry
-                │       └── Create JournalEntry instance
-                │       └── Save to user's journal file (e.g., save_to_file())
+                │       └── Creates JournalEntry instance and saves entry to user's username in journal file
                 │       └── Confirmation message of journal entry saved
                 │
                 ├── Option [2] View Past Entries
-                │       └── Load journal file (e.g., load_from_file())
+                │       └── Load journal file
                 │       └── Display list of entries
                 │             └── Options:
                 │                   ├─ View full entry
                 │                   └─ Return to menu
                 │
-                ├── Option [3] Mood Trend Summary
-                │       └── Load journal data
-                │       └── Parse moods + timestamps
-                │       └── Generate simple report or chart (console-based for now)
-                │
-                ├── Option [4] Exit App
+                ├── Option [3] Logout App
                         └── Save any changes if needed
-                        └── Return to Login or Exit Program
+                        └── Return to Login Menu
+                        └── Select another Menu option or Exit App once done
+```

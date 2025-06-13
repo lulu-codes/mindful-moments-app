@@ -1,0 +1,8 @@
+{
+    "testuser": {
+        "hashed_password": "$2b$12$R1N/bCKrQabjzl84ojqvkOY9/rCuOMk3domoGWvwek5ShHV6R0Yu."
+    },
+    "testuser2": {
+        "hashed_password": "$2b$12$DhVewvWCsvwqztDb7m9zaut1yIzqgShgaiB9zsmX5MXNs2JTlM2Ym"
+    }
+}
