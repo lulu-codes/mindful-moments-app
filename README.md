@@ -37,8 +37,7 @@ The application showcases my abilities and skills to develop and implement the u
 * Using third*party libraries and use of modules and functions
 * Using file handling, including reading and writing files/data to JSON
 
-##
-Mindful Moments" App
+## Purpose of "Mindful Moments" App
 
 The **"Mindful Moments"** CLI app is designed to help users track their daily emotional-wellbeing through mood ratings and journal reflections. It allow users to log and view their journal entries about "Mindful Moments" to encourage personal reflections on their daily mood and wins and challenges of the day.
 
