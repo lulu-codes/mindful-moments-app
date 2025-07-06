@@ -28,7 +28,7 @@ class UserAccount:
     def __init__(self, username, hashed_password):
         self.username = username
         self.hashed_password = hashed_password
-    
+
     def to_dict(self):
         """Converts UserAccount instance to a dict."""
         return {
@@ -39,7 +39,7 @@ class UserAccount:
     def from_dict(cls, username, account_data):
         """Reconstructs a UserAccount instance from dict data."""
         return cls(username, account_data.get("hashed_password"))
-    
+
     def verify_password(self, password_input):
         """Verifies password by comparing plain text password input against stored hashed password - using bcrypt."""
         password_input_bytes = password_input.encode('utf-8')
@@ -70,7 +70,7 @@ class BaseDataManager:
             raise DataFileCorruptedError(f"[red]{EMOJI_WARNING} Error loading data: Data file is corrupted or invalid.[/red]\n")
         except Exception as err:
             raise FileLoadingError(f"[red]{EMOJI_WARNING} Unexpected Error while loading file:[/red]\n") from err
-        
+
 
     def save_json_file(self, updated_data):
         """Saves data to the JSON file. Returns True if save successful, otherwise raises error."""
@@ -91,7 +91,7 @@ class UserManager(BaseDataManager):
         super().__init__(json_file_path)
         self.user_accounts = self.load_json_file()
 
-    def is_existing_user(self, username): 
+    def is_existing_user(self, username):
         """Check if a user exists in stored accounts: Returns True if existing, otherwise False."""
         return username in self.user_accounts
 
@@ -119,6 +119,8 @@ class UserManager(BaseDataManager):
     def register_user(self, username, password):
         """Register a new user account with a username and hashed password, returns True if successful, otherwise False."""
         try:
+            if self.is_existing_user(username):
+                return False
             hashed_password = self.hash_password(password)
             user_account = UserAccount(username, hashed_password)   # Creates instance of user account
             return self.add_user_account(user_account)
