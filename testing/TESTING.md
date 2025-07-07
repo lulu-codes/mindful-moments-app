@@ -19,7 +19,7 @@ Testing included a combination of manual testing, unit tests with pytest, and si
 | `add_user_account()` | Add user directly (bypassing registration) | - Manually adds a UserAccount instance with hashed pw <br> - Data is saved and reloads correctly from test JSON | Unit Testing | PASSED |
 | `authenticate_user()` | Authenticate login with valid credentials | - Returns UserAccount when password is correct <br> - Returns None if password is incorrect | Unit Testing | PASSED |
 | `UserAccount.verify_password()` | Verifies passwords match with `bcrypt` logic |- Returns True if password is correct <br> - Returns false if password is wrong | Unit Testing | PASSED |
-| `hash_password()` | Bcrpt logic | Checks password is securely hashed | - Password is hashed (not stored as plain text) <br> - Result is stored hash password is a valid string | Unit Testing | PASSED |
+| `hash_password()` | Checks password is securely hashed | - Password is hashed (not stored as plain text) <br> - Result is stored hash password is a valid string | Unit Testing | PASSED |
 
 
 ## Test File: `user_accounts.json` - (manual test of JSON loading/saving)
